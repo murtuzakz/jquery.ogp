@@ -52,7 +52,21 @@
     
     // this is the total of everything
     console.log("All the data is ", data);
-    
+
+    // Some sites dont have the namespace defined in their head or html tags, but still have
+    // og tags.
+    // In those cases, this should get the content. Else fallback to plain meta tags.
+    $.each(['description', 'title', 'url', 'img'], function(index, value){
+      if(!data[value]){
+        if($('meta[property="og:' + value + '"]').length > 0){
+          data[value] = [$('meta[property="og:' + value + '"]').attr('content')];
+        }else if ($('meta[name="' + value + '"').length > 0){
+          data[value] = [$('meta[name="' + value + '"').attr('content')];
+        }else{
+          data[value] = [""];
+      }
+    }
+})
     return data;
   }
 })(jQuery);
